@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{372F20CB-81C4-481C-93E4-E34B1BB0B683}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Interaction</RootNamespace>
+    <AssemblyName>Interaction</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Agent.cs" />
+    <Compile Include="CoordinateSystem.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Game_Enums.cs" />
+    <Compile Include="IAgent.cs" />
+    <Compile Include="King.cs" />
+    <Compile Include="KingEnvironment.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queen.cs" />
+    <Compile Include="StrategyIntelligence.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj">
+      <Project>{ce222c74-d444-48fb-b049-eff7e19bacab}</Project>
+      <Name>BuildingBlocks</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Game_Defination\Game_Defination.csproj">
+      <Project>{d196fb5b-fb10-416c-9f5f-d2b576ce4e04}</Project>
+      <Name>Game_Defination</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MovingStrategy\MovingStrategy.csproj">
+      <Project>{02d34753-4479-4b61-a427-95735d80cd58}</Project>
+      <Name>MovingStrategy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MusicPattern\MusicPattern.csproj">
+      <Project>{18eedf9c-fda5-4660-83e7-0a4950b8e3f2}</Project>
+      <Name>MusicPattern</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pieces\Pieces.csproj">
+      <Project>{d8662a05-aad2-462b-955d-0f2e40888478}</Project>
+      <Name>Pieces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Unit-Testing-Classes\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
