@@ -6,26 +6,33 @@ using System.Threading.Tasks;
 using Pieces;
 using SharedResources;
 using Game_Defination;
+using System.Collections;
 
 namespace SharedResources
 {
-    public abstract class Helper<T, U>
+    public abstract class Helper<U> 
     {
 
-        protected internal U[] elements;
+        // The starting point present the initial points of the elements.
         protected internal Point _startingPoint;
+
+        // This is the direction the elements are pointing at.
         protected internal int direction;
-        protected internal Dictionary<int, int> duration;
-        protected internal int numberOfTimes;
-        protected internal List<bool> canShootList;
+
+        // The maximum boundary of directions for a given dimension.
         protected internal int maximumDirection;
+        // The minimum boundary of directions for a given dimension.
         protected const int minimumDirection = 1;
-        protected internal bool circular;
-        protected internal bool canShoot = true;
+
+        // The speeds for moving from element at i to element at i+1 where i>=0 and i < number of elements - 1.
+        protected internal List<float> speedList;
+
+        // The speed of this object.
+        protected internal float speed;
 
 
         public int MinimumDirection { get; }
-        public int MaximumDirection { get; }
+        public int MaximumDirection { get; set; }
 
         public int MyDirection
         {
@@ -40,134 +47,56 @@ namespace SharedResources
                 if (value >= minimumDirection && value <= maximumDirection)
                 {
                     direction = value;
-                    //Fill();
                 }
             }
         }
-        public List<bool> CanShootList
-        {
-
-            get { return canShootList; }
-            set
-            {
-                if (value != null && value.Count == canShootList.Count)
-                    canShootList = value;
-            }
-        }
-        public int NumberOfTimes
-        {
-            get { return numberOfTimes; }
-            set
-            {
-                if (value > 0)
-                {
-                    numberOfTimes = value;
-                    //Fill();
-                }
-            }
-        }
-        public Dictionary<int, int> Duration
-        {
-            get { return duration; }
-            set { if (value != null && value.Count == duration.Count) duration = value; }
-        }
-        public U[] Elements
+        public Point StartingPoint { get; set; }      
+        
+        public List<float> SpeedList
         {
             get
             {
-                return elements;
+                return speedList;
             }
 
             set
             {
-                if (value != null)
-                    elements = value;
-            }
-        }
-        public bool Circular
-        {
-            get
-            {
-                return circular;
-            }
 
-            set
-            {
-                circular = value;
-                //Fill();
+                if (value != null && value.Count == speedList.Count)
+                    speedList = value;
+
             }
         }
-        public Point StartingPoint { get; set; }
-        public bool CanShoot { get; set; }
-       
+        public float Speed { get; set; }
+
 
         protected internal Helper()
-        {
-            numberOfTimes = 2;
-            duration = new Dictionary<int, int>();
-            canShootList = new List<bool>();
-            elements = new U[GetDefaultSize()];
-            circular = true;
-            
+        {          
+            speed = 10;
+            speedList = new List<float>();
         }
 
-        // Only direction subclass uses this constructor.
-        // Other subclasses should also use it.
-        // Shared direction is null.
-        protected internal Helper(U[] elements)
+        protected internal Helper(Point startingPoint, int direction,  
+        List<float> speedList, float speed)
         {
-            Instantiate(elements);
-            duration = new Dictionary<int, int>();
-            canShootList = new List<bool>();
-            this.elements = elements;
-            numberOfTimes = 2;
-            circular = true;
-        }
 
-        protected internal Helper(Point startingPoint, int direction,
-        List<bool> canShootList,Dictionary<int, int> duration, 
-        int numberOfTimes, bool circular)
-
-        {
-            
-            if (!IsDurationValid(duration))
-                throw new Exception("Make sure all duration values and keys are greater than zero.");
-            this.duration = duration;
-
-            if (direction < 1)
-                throw new Exception("The passed direction is incorrect, it must be at least 1.");
+            if (!IsDirectionValid(direction))
+                throw new Exception("Make sure you enter a valid direction.");
             this.direction = direction;
 
-            if (numberOfTimes < 1)
-                throw new Exception("The passed number of repeatations/rotations is incorrect, it must be at least 1.");
-            this.numberOfTimes = numberOfTimes;
+            if (speed < 0)
+                throw new Exception("Make sure the speed is a positive number.");
+            this.speed = speed;
 
-            if (canShootList.Count != duration.Count)
-                throw new Exception("The number of elements in the can shoot " +
-                    "list must be equals to the number of elements in a duration " +
-                    "dictionary.");
-            this.canShootList = canShootList;
+            if(speedList.Count == 0)
+                throw new Exception("Make sure the speed list is non empty.");
+            this.speedList = speedList;
+
             _startingPoint = startingPoint;
-            this.circular = circular;
-        }
-
-        protected abstract void Instantiate(U[] points);
-
-        protected abstract int GetDefaultSize();
-
-        // Get the last point on this direction.
-        public U GetLast()
-        {
-            return elements[elements.Length - 1];
-        }
-
-        // Get the first point on this direction.
-        public U GetFirst()
-        {
-            return elements[0];
         }
 
         // Checks whether the times given are valid.
+        // No Longer useful.
         public bool IsDurationValid(Dictionary<int, int> duration)
         {
             foreach (KeyValuePair<int, int> pair in duration)
@@ -177,41 +106,57 @@ namespace SharedResources
             return true;
         }
 
-        // Fill the duration of this direction.
-        // All points making up this direction have the same period.
-        public void FillDuration(int circularTotalTime)
-        {
-            for (int i = 0; i < elements.Length; i++)
-                duration.Add(i, circularTotalTime / (elements.Length));
-        }
-
         // Determines whether or not a direction is within the boundaries.
         public bool IsDirectionValid(int direction)
         {
             return direction >= minimumDirection && direction <= maximumDirection;
         }
 
-        // String representation of this circular direction.
-        public string ToString<V>(V baseClass, int numberOfRotations)
+
+        // Get the string presentation of the speed list.
+        public string GetSpeedPresentation()
         {
-            string output = baseClass.ToString() + "\n";
-
-            string elementsString = "";
-
-            for (int index = 0; index < elements.Length; index++)
-                elementsString += (elements[index].ToString() + "\n");
-
-            return output + elementsString + "\nNumber Of rotations/repeatations : " + numberOfRotations;
+            string output = "[ ";
+            int i;
+            for (i = 0; i < speedList.Count - 1; i++)
+                output += speedList[i] + ", ";
+            return output + speedList[i+1]+ "]\n";
         }
 
-        // Fill the can shoot list will false values only.
-        public void FillCanShoot()
+        // Fill this  speed list using a common speed.
+        public void FillSpeedList(float commonSpeed)
         {
-            for (int i = 0; i < elements.Length; i++)
-                canShootList.Add(false);
+            if (speedList.Count == 0)
+                for (int i = 0; i < speedList.Count; i++)
+                    speedList.Add(commonSpeed);
         }
 
-       
+        // Display the speed list.
+        public void DisplaySpeedList()
+        {
+            int count = 0;
 
+            for (int i = 0; i < speedList.Count; i++)
+            {
+                if (count % 10 == 0 && count != 0)
+                    Console.WriteLine(speedList[i] + " ");
+                else
+                    Console.Write(speedList[i] + " ");
+                count++;
+            }
+
+            Console.WriteLine();
+        }
+
+        // Find the value of each axis direction component on this direction.
+        protected float DetermineDirectionComponentLength(ISharedDirection sharedDirection)
+        {
+            float firstComponent = sharedDirection.Length[0];
+
+            foreach (float componentLength in sharedDirection.Length)
+                if (componentLength != 0 && componentLength != firstComponent)
+                    throw new Exception("Make sure all the components of a direction length have equal length.");
+            return firstComponent;
+        }
     }
 }

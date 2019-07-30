@@ -10,84 +10,33 @@ using CircularIteration;
 
 namespace BuildingBlocks
 {
-    public abstract class CircularLetter<T, U> : Circular<T, U>, ILetter<T>, IDirectionIterator<U>
+    public class CircularLetter<T, U> : Circular<T, U>, IPointIterator<U>, IDirectionIterator<U>
     {
-        protected CircularLetter()
+        public CircularLetter()
+        : base()
         {
 
         }
 
-        /*public CircularLetter(SharedDirection shareDirection)
-        {
-
-        }*/
-
-        public CircularLetter(Letter<T,U> letter)
+        public CircularLetter(List<bool> directionsCanSwitchList, 
+        bool canSwitch, int numberOfRotations)
+        : base(directionsCanSwitchList, canSwitch, numberOfRotations)
         {
 
         }
 
-        /*protected CircularLetter(Point startingPoint, char letter,
-        int letterDirection, bool smaller, Dictionary<int, int> duration)
+        // Return an itertator for points.
+        // Used in case a player decided to keep track of points.
+        public PointIterator<U> RetrievePointIterator()
         {
-
-        }*/
-
-        /*protected CircularLetter(Point startingPoint, char letter,
-        int letterDirection, bool smaller, Dictionary<int, int> duration,
-        int numberOfRotations)
-        {
-
-        }*/
-
-        protected CircularLetter(Point _startingPoint, char letter, Plane onPlane,
-        bool smaller, int letterDirection, List<bool> canShootList, Dictionary<int, int> duration,
-        int numberOfRotations)
-        {
-
+            return new PointIterator<U>(0, (CircularLinkedList<U>)linkedList);
         }
 
-        /*protected CircularLetter(Point startingPoint, char letter,
-        int letterDirection, bool smaller, Dictionary<int, int> duration,
-        int numberOfRotations, SharedDirection shareDirection)
+        // Return an itertator for directions.
+        // Used in case a player decided to keep track of directions.
+        public DirectionIterator<U> RetrieveDirectionIterator()
         {
-
-        }*/
-
-        /*protected CircularLetter(Point startingPoint, char letter, int letterDirection,
-        bool smaller, Dictionary<int, int> duration, SharedDirection shareDirection)
-        {
-
-        }*/
-
-
-        /*protected CircularLetter(Point _startingPoint, char letter, Plane onPlane,
-        bool smaller, int letterDirection, List<bool> canShootList, Dictionary<int, int> duration,
-        int numberOfRotations, SharedDirection shareDirection)
-        {
-
-        }*/
-
-        public abstract void DisplayLetterInfo();
-        public abstract bool IsC(List<int> directions, List<float> lengths);
-        public abstract bool IsI(List<int> directions, List<float> lengths);
-        public abstract bool IsL(List<int> directions, List<float> lengths);
-        public abstract bool IsM(List<int> directions, List<float> lengths);
-        public abstract bool IsN(List<int> directions, List<float> lengths);
-        public abstract bool IsO(List<int> directions, List<float> lengths);
-        public abstract bool IsR(List<int> directions, List<float> lengths);
-        public abstract bool IsS(List<int> directions, List<float> lengths);
-        public abstract bool IsW(List<int> directions, List<float> lengths);
-
-
-        public abstract DirectionIterator<U> RetrieveDirectionIterator();
-        public abstract bool IsLetter(List<int> directions, List<float> lengths);
-        public abstract T RotateAroundAxis(int indexOfAxis, int numberOfTimes);
-        public abstract T ReflectAboutAxis(int axisIndex);
-        public abstract T ReflectAboutEqualAxis(int[] axisIndeces, int numberOfTimes);
-        public abstract T Translate(int coordinateSystemDirection, float amaunt);
-        public abstract void Display();
-        public abstract int CompareTo(T comparableInstance);
-        public abstract T RotateAroundEqualAxis(int[] axisIndeces, int numberOfTimes);
+            return new DirectionIterator<U>(0, (CircularLinkedList<U>)linkedList);
+        }
     }
 }

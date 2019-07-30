@@ -27,18 +27,18 @@ namespace Secondary_Queen
 
 
         protected R2NCLetter(Point _startingPoint, char letter, bool smaller, int letterDirection,
-        List<bool> canShootList, Dictionary<int, int> duration, int numberOfRotations)
+        List<bool> CanSwitchList, Dictionary<int, int> duration, int numberOfRotations)
         : this(_startingPoint, letter, smaller, letterDirection,
-        canShootList, duration, numberOfRotations, new SharedDirection(10, 1))
+        CanSwitchList, duration, numberOfRotations, new SharedDirection(10, 1))
         {
 
         }
 
         protected R2NCLetter(Point _startingPoint, char letter, bool smaller, int letterDirection,
-        List<bool> canShootList, Dictionary<int, int> duration, int numberOfRotations,
+        List<bool> CanSwitchList, Dictionary<int, int> duration, int numberOfRotations,
         SharedDirection shareDirection)
         : base(_startingPoint, letter, R2Plane.GetR2Plane(), smaller, letterDirection,
-        canShootList, duration, numberOfRotations)
+        CanSwitchList, duration, numberOfRotations)
         {
             Fill();
         }
@@ -140,12 +140,6 @@ namespace Secondary_Queen
         }
 
 
-
-
-
-
-
-
         public override R2NCLetter RotateAroundAxis(int indexOfAxis, int numberOfTimes)
         {
             throw new NotImplementedException();
@@ -191,25 +185,25 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1]),
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         firstDirection.Direction)), firstDirection.Direction,
-                        letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor, letter.CanShootList[2],
+                        letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor, letter.CanSwitchList[2],
                         letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -218,7 +212,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.MyDirection, letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         break;
                     case 'L':
@@ -232,11 +226,11 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1],
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
@@ -246,7 +240,7 @@ namespace Secondary_Queen
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection),
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[0] <
                         letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[1]) ? letter.OnPlane.
@@ -255,7 +249,7 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = (letter.OnPlane.AreDirectionsNeighbors(firstDirection.Direction, letter.OnPlane.
@@ -265,13 +259,13 @@ namespace Secondary_Queen
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -281,7 +275,7 @@ namespace Secondary_Queen
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection),
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[0] <
                         letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[1]) ? letter.OnPlane.
@@ -290,13 +284,13 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
@@ -311,27 +305,27 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1],
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = letter.OnPlane.GetOppositeDirection(letter.MyDirection);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(firstDirection.Direction);
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(secondDirection.Direction);
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -347,7 +341,7 @@ namespace Secondary_Queen
                         (threeUnitsAwayDirections[0] < threeUnitsAwayDirections[1]) ?
                         threeUnitsAwayDirections[0] : threeUnitsAwayDirections[1],
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         perpendicularDirections = letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction);
 
@@ -358,7 +352,7 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
@@ -372,13 +366,13 @@ namespace Secondary_Queen
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -387,7 +381,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.MyDirection, letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[0]
                         < letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[1]) ?
@@ -396,26 +390,26 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(firstDirection.Direction);
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         secondDirection.Direction)), secondDirection.Direction, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
                         fifthDirection = new R2NCDirection(new R2Point(forthDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[4], letter.Duration[4], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[4], letter.Duration[4], 1);
 
                         fifthDirection.RemoveLastPoint();
 
@@ -424,7 +418,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection), letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[0]
                         < letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[1]) ?
@@ -433,14 +427,14 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
@@ -462,25 +456,25 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1]),
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         firstDirection.Direction)), firstDirection.Direction,
-                        letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor, letter.CanShootList[2],
+                        letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor, letter.CanSwitchList[2],
                         letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -489,7 +483,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.MyDirection, letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         break;
                     case 'L':
@@ -503,11 +497,11 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1],
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
@@ -517,7 +511,7 @@ namespace Secondary_Queen
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection),
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[0] >
                         letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[1]) ? letter.OnPlane.
@@ -526,7 +520,7 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = (letter.OnPlane.AreDirectionsNeighbors(firstDirection.Direction, letter.OnPlane.
@@ -536,13 +530,13 @@ namespace Secondary_Queen
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -552,7 +546,7 @@ namespace Secondary_Queen
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection),
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[0] >
                         letter.OnPlane.RetrieveNeighborDirections(letter.MyDirection)[1]) ? letter.OnPlane.
@@ -561,13 +555,13 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
@@ -582,27 +576,27 @@ namespace Secondary_Queen
                         letter.OnPlane.RetrievePerpendicularDirections(letter.MyDirection)[1],
 
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = letter.OnPlane.GetOppositeDirection(letter.MyDirection);
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(firstDirection.Direction);
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(secondDirection.Direction);
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -618,7 +612,7 @@ namespace Secondary_Queen
                         (threeUnitsAwayDirections[0] > threeUnitsAwayDirections[1]) ?
                         threeUnitsAwayDirections[0] : threeUnitsAwayDirections[1],
                         letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         perpendicularDirections = letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction);
 
@@ -629,7 +623,7 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
@@ -643,13 +637,13 @@ namespace Secondary_Queen
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
@@ -658,7 +652,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.MyDirection, letter.SharedDirection.DirectionLength, letter.SharedDirection.Divisor,
-                        letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[0]
                         > letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[1]) ?
@@ -667,26 +661,26 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
                         currentDirection = letter.OnPlane.GetOppositeDirection(firstDirection.Direction);
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 
                         forthDirection = new R2NCDirection(new R2Point(thirdDirection.RetrieveNextStartingPoint(
                         secondDirection.Direction)), secondDirection.Direction, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[3], letter.Duration[3], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[3], letter.Duration[3], 1);
 
                         forthDirection.RemoveLastPoint();
 
                         fifthDirection = new R2NCDirection(new R2Point(forthDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[4], letter.Duration[4], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[4], letter.Duration[4], 1);
 
                         fifthDirection.RemoveLastPoint();
 
@@ -695,7 +689,7 @@ namespace Secondary_Queen
 
                         firstDirection = new R2NCDirection(new R2Point(letter.StartingPoint),
                         letter.OnPlane.GetOppositeDirection(letter.MyDirection), letter.SharedDirection.DirectionLength,
-                        letter.SharedDirection.Divisor, letter.CanShootList[0], letter.Duration[0], 1);
+                        letter.SharedDirection.Divisor, letter.CanSwitchList[0], letter.Duration[0], 1);
 
                         currentDirection = (letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[0]
                         > letter.OnPlane.RetrievePerpendicularDirections(firstDirection.Direction)[1]) ?
@@ -704,14 +698,14 @@ namespace Secondary_Queen
 
                         secondDirection = new R2NCDirection(new R2Point(firstDirection.RetrieveNextStartingPoint(
                         currentDirection)), currentDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[1], letter.Duration[1], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[1], letter.Duration[1], 1);
 
                         secondDirection.RemoveLastPoint();
 
 
                         thirdDirection = new R2NCDirection(new R2Point(secondDirection.RetrieveNextStartingPoint(
                         letter.MyDirection)), letter.MyDirection, letter.SharedDirection.DirectionLength, letter.
-                        SharedDirection.Divisor, letter.CanShootList[2], letter.Duration[2], 1);
+                        SharedDirection.Divisor, letter.CanSwitchList[2], letter.Duration[2], 1);
 
                         thirdDirection.RemoveLastPoint();
 

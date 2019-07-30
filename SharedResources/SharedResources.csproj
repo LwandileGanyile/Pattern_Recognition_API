@@ -47,10 +47,12 @@
     <Compile Include="DoubleLinkedList.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IDirection.cs" />
+    <Compile Include="IDirectionHelper.cs" />
     <Compile Include="IFill.cs" />
     <Compile Include="ILetter.cs" />
-    <Compile Include="ILetterPart.cs" />
+    <Compile Include="IPartOf.cs" />
     <Compile Include="IMyLinkedList.cs" />
+    <Compile Include="ISharedDirection.cs" />
     <Compile Include="Letter.cs" />
     <Compile Include="MyLinkedList.cs" />
     <Compile Include="MyNode.cs" />

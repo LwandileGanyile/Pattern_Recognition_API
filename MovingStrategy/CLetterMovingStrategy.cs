@@ -32,10 +32,10 @@ namespace MovingStrategy
         }
 
         protected CLetterMovingStrategy(Point _startingPoint, int direction,
-        List<bool> canShootList, Dictionary<int, int> duration,
+        List<bool> CanSwitchList, Dictionary<int, int> duration,
         int numberOfRotations/*, LetterTraceType traceType*/)
         : base(_startingPoint, direction,
-        canShootList, duration, numberOfRotations)
+        CanSwitchList, duration, numberOfRotations)
         {
             //this.traceType = traceType;
             Fill();

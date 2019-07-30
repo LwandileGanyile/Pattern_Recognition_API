@@ -5,17 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Secondary_Queen
+namespace Primary_Queen
 {
     public class SharedDirection : ISharedDirection
-    {
+    { 
+
         private SharedResources.SharedDirection sharedDirection;
 
         public float Divisor
         {
             get
             {
-                return sharedDirection.Divisor;
+                return sharedDirection.Divisor; 
             }
 
             set
@@ -47,46 +48,31 @@ namespace Secondary_Queen
             }
         }
 
-        public float YLength
-        {
-            get
-            {
-                return sharedDirection.Length[1];
-            }
-
-            set
-            {
-
-                if (value > 0 && value % sharedDirection.Divisor == 0)
-                    sharedDirection.Length[1] = value;
-
-            }
-        }
+       
 
         public SharedDirection()
-        : this(2)
         {
-
+            sharedDirection = new SharedResources.SharedDirection();
         }
 
         public SharedDirection(float _divisor)
-        : this(12, 12,_divisor)
         {
-
+            sharedDirection = new SharedResources.SharedDirection(_divisor);
         }
 
-        public SharedDirection(float _xLength, float _yLength, float _divisor)
+        public SharedDirection(float _xLength, float _divisor)
         {
-            if (!(_xLength % _divisor == 0 && _yLength % _divisor == 0))
-                throw new Exception("Make sure the components of a direction length are a number divisible by the divisor.");
 
-            sharedDirection = new SharedResources.SharedDirection(new List<float>() { _xLength, _yLength }, _divisor);
+            if (!(_xLength % _divisor == 0))
+                throw new Exception("Make sure the direction length is a number divisible by the divisor.");
+            
+            sharedDirection = new SharedResources.SharedDirection(new List<float>() { _xLength }, _divisor);
         }
+
 
         public float GetDirectionLength()
         {
             return sharedDirection.GetDirectionLength();
-           
         }
 
         public override string ToString()
@@ -104,4 +90,5 @@ namespace Secondary_Queen
             return ((ISharedDirection)sharedDirection).GetNumberOfElements();
         }
     }
+
 }

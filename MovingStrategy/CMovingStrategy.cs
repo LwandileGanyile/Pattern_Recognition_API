@@ -27,9 +27,9 @@ namespace MovingStrategy
         }
 
         protected CMovingStrategy(Point _startingPoint, int direction,
-        List<bool> canShootList, Dictionary<int, int> duration, int numberOfRotations)
+        List<bool> CanSwitchList, Dictionary<int, int> duration, int numberOfRotations)
         : base(_startingPoint, direction,
-        canShootList, duration, numberOfRotations)
+        CanSwitchList, duration, numberOfRotations)
         {
 
         }

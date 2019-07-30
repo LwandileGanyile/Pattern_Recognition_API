@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace SharedResources
 {
     
-    public class SharedDirection
+    public class SharedDirection 
     {
-        protected float _xLength;
+        protected List<float> length;
         protected float _divisor;
 
         public float Divisor
@@ -26,26 +26,29 @@ namespace SharedResources
             }
         }
 
-        public float XLength
+        public List<float> Length
         {
             get
             {
-                return _xLength;
+                return length;
             }
 
             set
             {
 
-                if (value > 0 && value % _divisor == 0)
-                    _xLength = value;
+                if (value !=  null && value.Count == length.Count)
+                    length = value;
 
             }
         }
 
+        
+
         public SharedDirection()
         {
             _divisor = 1;
-            _xLength = 12;
+            length = new List<float>();
+            length.Add(2);
         }
 
         public SharedDirection(float _divisor)
@@ -57,31 +60,54 @@ namespace SharedResources
                 throw new Exception("Make sure the divisor is a divisor of 12.");
 
             this._divisor = _divisor;
-            _xLength = 12;
-            
+            length = new List<float>();
+            length.Add(12);
+
         }
 
-        public SharedDirection(float _xLength, float _divisor)
+        public SharedDirection(List<float> length, float _divisor)
         {
             if (_divisor < 1)
                 throw new Exception("Make sure the divisor is at least 1.");
             this._divisor = _divisor;
 
-            if (!(_xLength % _divisor == 0))
-                throw new Exception("Make sure the direction length is a number divisible by the divisor.");
-            this._xLength = _xLength;
+            this.length = length;
         }
+
 
         public float GetDirectionLength()
         {
-            return XLength;
+            float sumOfSquares = 0;
+
+            foreach (float directionLength in length)
+                sumOfSquares += (float)Math.Pow(directionLength,2);
+                    
+            return (float)Math.Sqrt(sumOfSquares);
         }
 
         public override string ToString()
         {
-            return "xLength : " + _xLength + "\tDirection Divisor : " + _divisor+"\n";
+            string toReturn = "Length : ";
+
+            foreach (float directionLength in length)
+                toReturn += directionLength + " ";
+
+            toReturn += "\tDirection Divisor : " + _divisor+"\n";
+
+            return toReturn;
         }
 
-        
+        public float GetDirectionLengthComponent(int componentIndex)
+        {
+            float toReturn = float.MaxValue;
+
+            if (componentIndex >= 0 && componentIndex < length.Count)
+                toReturn = length[componentIndex];
+            return toReturn;
+        }
+
+        public int GetNumberOfElements() { return (int)(GetDirectionLength()/Divisor); }
+
+       
     }
 }

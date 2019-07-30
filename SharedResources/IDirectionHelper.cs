@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SharedResources
 {
-    public interface ILetterPart
+    public interface IDirectionHelper<U>
     {
+        bool IsParallellTo(int axis);
+        bool IsPerpendicularTo(int axis);
     }
 }

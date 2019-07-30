@@ -31,10 +31,10 @@ namespace MovingStrategy
         }
 
         protected NCShapeMovingStrategy(Point _startingPoint, int direction,
-        List<bool> canShootList, Dictionary<int, int> duration,
+        List<bool> CanSwitchList, Dictionary<int, int> duration,
         int numberOfRepeatation/*, ShapeTraceType traceType*/)
         : base(_startingPoint, direction,
-        canShootList, duration, numberOfRepeatation)
+        CanSwitchList, duration, numberOfRepeatation)
         {
             //this.traceType = traceType;
             Fill();

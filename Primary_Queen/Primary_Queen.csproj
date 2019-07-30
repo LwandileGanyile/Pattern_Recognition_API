@@ -72,6 +72,7 @@
     <Compile Include="RightOnly.cs" />
     <Compile Include="RightThenLeft.cs" />
     <Compile Include="SecondMove.cs" />
+    <Compile Include="SharedDirection.cs" />
     <Compile Include="ThirdMove.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,101 +8,31 @@ using Game_Defination;
 
 namespace SharedResources
 {
-    public abstract class Parent<T, U> :  IFill
+    public abstract class Parent<T, U> 
     {
+        // Determines whether elements can switch the current pattern.
+        protected List<bool> canSwitchList;
+        // Determines wheter this object can switch the current pattern.
+        protected bool canSwitch;
 
-        protected Point _startingPoint;
-
-        protected int direction;
-        protected List<bool> canShootList;
-        protected Dictionary<int, int> duration;
         // Letters are made up of directions, each piece of a direction equals to divisor.
         protected MyLinkedList<U> linkedList;
 
+        // The number of times the linkedList data structure is traversed.
+        protected int numberOfTimes;
 
-        protected Parent()
+
+        public List<bool> CanSwitchList
         {
-            duration = new Dictionary<int, int>();
-            canShootList = new List<bool>();
 
-        }
-
-        protected Parent(Point _startingPoint, int direction,
-        Dictionary<int, int> duration)
-        {
-            this._startingPoint = _startingPoint;
-            this.direction = direction;
-            this.duration = duration;
-            canShootList = new List<bool>();
-        }
-
-        protected Parent(Point _startingPoint, int direction,
-        List<bool> canShootList, Dictionary<int, int> duration)
-        {
-            this._startingPoint = _startingPoint;
-            this.direction = direction;
-            this.duration = duration;
-            this.canShootList = canShootList;
-        }
-
-
-        public int Direction
-        {
-            get
-            {
-                return direction;
-            }
-
+            get { return canSwitchList; }
             set
             {
-                if (value > 0)
-                {
-                    Clear();
-                    direction = value;
-                    Fill();
-                }
-            }
-
-        }
-        public Dictionary<int, int> Duration
-        {
-            get
-            {
-                return duration;
-            }
-            set
-            {
-
+                if (value != null && value.Count == canSwitchList.Count)
+                    canSwitchList = value;
             }
         }
-        public List<bool> CanShoot
-        {
-            get
-            {
-                return canShootList;
-            }
-
-            set
-            {
-                if (value.Count == canShootList.Count)
-                    canShootList = value;
-            }
-        }
-        public Point StartingPoint
-        {
-
-            get
-            {
-                return _startingPoint;
-            }
-
-            set
-            {
-                Clear();
-                _startingPoint = value;
-
-            }
-        }
+        public bool CanSwitch { get; set; }
 
         public MyLinkedList<U> LinkedList
         {
@@ -118,79 +48,117 @@ namespace SharedResources
             }
         }
 
-        public override string ToString()
+        public int NumberOfTimes { set; get; }
+
+        protected Parent()
         {
-            return "Facing direction : " + Direction + "\nStarting At : " +
-            _startingPoint.ToString() + "\nCanShooList : " + GetCanShootPresentation() +
-            "\nDuration directory : \n" + GetDurationPresentation();
+            canSwitchList = new List<bool>();
+            canSwitch = true;
+            numberOfTimes = 2;
         }
 
-        private string GetCanShootPresentation()
+        protected Parent(List<bool> canSwitchList, bool canSwitch,
+        int numberOfTimes)
+        {
+            if (numberOfTimes < 1)
+                throw new Exception("The passed number of repeatations/rotations is incorrect, it must be at least 1.");
+            this.numberOfTimes = numberOfTimes;
+
+            if (canSwitchList.Count> 1)
+                throw new Exception("The number of elements in the can shoot " +
+                    "list must be atleast 2.");
+            this.canSwitchList = canSwitchList;
+        }
+
+        // Get the string presentation of the can switch list.
+        public string GetCanSwitchListPresentation()
         {
             string output = "[ ";
 
 
-            for (int i = 0; i < canShootList.Count - 1; i++)
-                if (canShootList[i])
+            for (int i = 0; i < canSwitchList.Count - 1; i++)
+                if (canSwitchList[i])
                     output += "True, ";
                 else
                     output += "False, ";
 
-            if (canShootList[canShootList.Count - 1])
+            if (canSwitchList[canSwitchList.Count - 1])
                 output += "True ]";
             else
-                output += "False ]";
+                output += "False ]\n";
 
 
             return output;
         }
-
-        private string GetDurationPresentation()
-        {
-            string output = "";
-
-            foreach (KeyValuePair<int, int> keyValuePair in duration)
-            {
-                output += ("\t\tKey : " + keyValuePair.Key.ToString() + "\tTakes : " + keyValuePair.Value.ToString() + " milliseconds.");
-                output += "\n";
-            }
-
-            return output;
-        }
-
-        public void Clear() { linkedList.Clear(); }
-        /*public abstract T RotateAroundAxis(int indexOfAxis, int numberOfTimes);
-        public abstract T ReflectAboutAxis(int axisIndex);
-        public abstract T ReflectAboutEqualAxis(List<int> axisIndeces, int numberOfTimes);
-        public abstract T RotateAroundEqualAxis(List<int> indecesOfAxis, int numberOfTimes);
-        public abstract T Translate(int coordinateSystemDirection, float amaunt);
-
-        public abstract void Display();*/
 
         // Display whether or not each point/direction/letter can do another strategy such as shooting.
-        public void DisplayCanShoot()
+        public void DisplayCanSwitchList()
         {
-            for (int i = 1; i <= canShootList.Count; i++)
-                Console.Write(canShootList[i - 1] + " ");
+            int count = 0;
+
+            for (int i = 0; i < canSwitchList.Count; i++)
+            {
+                if (count % 10 == 0 && count != 0)
+                    Console.WriteLine(canSwitchList[i] + " ");
+                else
+                    Console.Write(canSwitchList[i] + " ");
+                count++;
+            }
             Console.WriteLine();
         }
 
-        //public abstract int CompareTo(T comparableInstance);
-        //public abstract T ReflectAboutEqualAxis(int[] axisIndeces, int numberOfTimes);
-
-        public abstract void Fill();
-
-        protected void FillCanShootList()
+        // Get the last point on this direction.
+        // I double this is needed here.
+        public U GetLast()
         {
-            for (int i = 0; i < linkedList.Size; i++)
-                canShootList.Add(false);
+            return linkedList.GetLast();
         }
 
-        protected void FillDuration(int circularTotalTime)
+        // Get the first point on this direction.
+        // I double this is needed here.
+        public U GetFirst()
         {
-            for (int i = 0; i < linkedList.Size; i++)
-                duration.Add(i, (int)(circularTotalTime / (linkedList.Size)));
+            return linkedList.GetFirst();
         }
+
+        // Fill this parent using elements from the helper class.
+        public void Fill(U[] elements)
+        {
+            for (int i = 0; i < elements.Length; i++)
+                linkedList.Add(elements[i]);
+        }
+
+        // Fill the can shoot list using a list from the helper class.
+        public void FillCanSwitchList(List<bool> canSwitchList)
+        {
+            if (this.canSwitchList.Count == 0)
+                for (int i = 0; i < canSwitchList.Count; i++)
+                    this.canSwitchList.Add(canSwitchList[i]);
+        }
+
+        // Remove the last element on this direction.
+        public void RemoveLast()
+        {
+            linkedList.RemoveLast();
+        }
+
+        // Remove the last element on this direction.
+        public void RemoveFist()
+        {
+            linkedList.RemoveFirst();
+        }
+
+        // Remove all elements in the containing data structure.
+        public void Clear() { linkedList.Clear(); }
+
+        public override string ToString()
+        {
+            return GetCanSwitchListPresentation()
+            + "How many times? " + numberOfTimes + "\n";
+        }
+
+        // The starting point for the direction following this one when making a letter.
+        public Point RetrieveNextStartingPoint(int direction) { return null; }
 
 
     }

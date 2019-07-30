@@ -26,10 +26,10 @@ namespace MovingStrategy
         }
 
         protected NCMovingStrategy(Point _startingPoint, int direction,
-        List<bool> canShootList, Dictionary<int, int> duration,
+        List<bool> CanSwitchList, Dictionary<int, int> duration,
         int numberOfRepeatations)
         : base(_startingPoint, direction,
-        canShootList, duration, numberOfRepeatations)
+        CanSwitchList, duration, numberOfRepeatations)
         {
 
         }

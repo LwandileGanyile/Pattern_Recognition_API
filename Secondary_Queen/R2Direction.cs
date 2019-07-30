@@ -11,135 +11,43 @@ namespace Secondary_Queen
 {
 
     // U is either R2CircularDirection or R2CircularDirection.
-    public class R2Direction<IDirection> : Direction<IDirection, R2Point>, ILetterPart
+    public class R2Direction<IDirection> :  IPartOf<R2Direction<IDirection>>, IDirectionHelper<R2Point>
     {
+        private Direction<R2Point> direction;
 
-
-        public new Point StartingPoint
-        {
-            get
-            {
-                return _startingPoint;
-            }
-            set
-            {
-                if (value != null && value.GetDimension() == 2)
-                {
-                    _startingPoint = value;
-                    Fill();
-                }
-            }
-        }
-
-        public SharedDirection SharedDirection
-        {
-            get { return (SharedDirection)sharedDirection; }
-            set
-            {
-                if (value.Divisor != 0 &&
-                value.XLength % value.Divisor == 0 && value.YLength % value.Divisor == 0
-                && (value.Divisor < value.XLength || value.Divisor < value.YLength) )
-                {
-                    sharedDirection = value;
-                    //Fill();
-                }
-            }
-        }
+        public Direction<R2Point> Direction { get; }
 
         public R2Direction()
         {
-            _startingPoint = new R2Point().Position;
-            direction = 6;
-            maximumDirection = 8;
-        }
-
-        public R2Direction(R2Point[] points)
-        : base(points)
-        {
-            maximumDirection = 8;
+            direction = new Direction< R2Point>();
+            direction.StartingPoint = new R2Point().Position;
+            direction.SharedDirection = new SharedDirection(2);
+            direction.DirectionComponentLength = 2;
+            direction.MyDirection = 6;
+            direction.MaximumDirection = 8;
         }
 
         public R2Direction(R2Point startingPoint, int direction, float xLength,
-        float yLength,float divisor, int duration,
-        int numberOfTimes, bool circular)
-        : base(startingPoint.Position, direction, new SharedDirection(xLength, yLength, divisor),
-        new List<bool>(), duration,numberOfTimes, circular)
+        float yLength,  float divisor, List<float> speedList, float speed)
         {
-            elements = new R2Point[(int)(Math.Sqrt(xLength*xLength + yLength*yLength))];
-            maximumDirection = 8;
+            this.direction = new Direction<R2Point> (startingPoint.Position,
+            direction, new SharedDirection(xLength, yLength, divisor), speedList,
+            speed);
+
+            this.direction.SharedDirection = new SharedDirection(xLength, yLength, divisor);
+
+            this.direction.DirectionComponentLength = this.direction.SharedDirection.Length[
+            this.direction.SharedDirection.Length.Count - 1] - this.direction.SharedDirection.Length[0];
+
+            this.direction.MaximumDirection = 8;
         }
 
-        public R2Direction(R2Point startingPoint, int direction, float xLength,
-        float yLength, float divisor, List<bool> canShootList, int duration,
-        int numberOfTimes, bool circular)
-        : base(startingPoint.Position, direction, new SharedDirection(xLength, yLength,divisor), 
-        canShootList,duration, numberOfTimes, circular)
+        // Reflect about the x-axis or y-axis.
+        public R2Direction<IDirection> ReflectAboutAxis(int axisIndex)
         {
-            elements = new R2Point[(int)(Math.Sqrt(xLength * xLength + yLength * yLength))];
-            maximumDirection = 8;
-        }
-
-        // Used if we only know the points making up this direction.
-        // All other attributes are to be generated.
-        protected override void Instantiate(R2Point[] points)
-        {
-            if (points.Length >= 2)
-            {
-                float difference;
-                if (Math.Abs(elements[0].GetXCoordinate() - elements[1].GetXCoordinate()) != 0)
-                    difference = Math.Abs(elements[0].GetXCoordinate() - elements[1].GetXCoordinate());
-                else if (Math.Abs(elements[0].GetYCoordinate() - elements[1].GetYCoordinate()) != 0)
-                    difference = Math.Abs(elements[0].GetYCoordinate() - elements[1].GetYCoordinate());
-                else
-                    throw new Exception("Any two consecutive points must have a common x or y difference.");
-
-                for (int i = 0; i < points.Length - 1; i++)
-                    if ((Math.Abs(elements[i].GetXCoordinate() - points[i + 1].GetXCoordinate()) != difference)
-                        || (Math.Abs(elements[i].GetYCoordinate() - points[i + 1].GetYCoordinate()) != difference))
-                        throw new Exception("The difference between points making up a direction should be the same.");
-
-                if (elements[0].GetXCoordinate() > elements[1].GetXCoordinate()
-                    && elements[0].GetYCoordinate() > elements[1].GetYCoordinate())
-                    direction = 6;
-                else if (elements[0].GetXCoordinate() < elements[1].GetXCoordinate()
-                    && elements[0].GetYCoordinate() < elements[1].GetYCoordinate())
-                    direction = 7;
-                else if (elements[0].GetXCoordinate() < elements[1].GetXCoordinate()
-                    && elements[0].GetYCoordinate() > elements[1].GetYCoordinate())
-                    direction = 5;
-                else if (elements[0].GetXCoordinate() > elements[1].GetXCoordinate()
-                    && elements[0].GetYCoordinate() < elements[1].GetYCoordinate())
-                    direction = 4;
-                else if (elements[0].GetXCoordinate() == elements[1].GetXCoordinate()
-                   && elements[0].GetYCoordinate() < elements[1].GetYCoordinate())
-                    direction = 2;
-                else if (elements[0].GetXCoordinate() == elements[1].GetXCoordinate()
-                   && elements[0].GetYCoordinate() > elements[1].GetYCoordinate())
-                    direction = 3;
-                else if (elements[0].GetXCoordinate() > elements[1].GetXCoordinate()
-                   && elements[0].GetYCoordinate() == elements[1].GetYCoordinate())
-                    direction = 8;
-                else if (elements[0].GetXCoordinate() < elements[1].GetXCoordinate()
-                   && elements[0].GetYCoordinate() == elements[1].GetYCoordinate())
-                    direction = 1;
-                else
-                    throw new Exception("There should be no duplicates points making up a direction.");
-
-                _startingPoint = points[0].Position;
-                sharedDirection = new SharedDirection(
-                                  Math.Abs(points[0].GetXCoordinate() - points[points.Length - 1].GetXCoordinate()),
-                                  Math.Abs(points[0].GetYCoordinate() - points[points.Length - 1].GetYCoordinate()), 
-                                  difference);
-                maximumDirection = 8;
-            }
-        }
-
-        // Reflect about the x-axis, y-axis or z-axis.
-        public override IDirection ReflectAboutAxis(int axisIndex)
-        {
-            int originalDirection = direction;
-            float originalXCoordinate = _startingPoint.GetAxisAt(0);
-            float originalYCoordinate = _startingPoint.GetAxisAt(1);
+            int originalDirection = direction.MyDirection;
+            float originalXCoordinate = direction.StartingPoint.GetAxisAt(0);
+            float originalYCoordinate = direction.StartingPoint.GetAxisAt(1);
 
             int newDirection = originalDirection;
             float newYCoordinate = originalYCoordinate;
@@ -149,7 +57,7 @@ namespace Secondary_Queen
             if (axisIndex == 1)
             {
                 newYCoordinate = -1 * originalYCoordinate;
-                switch (direction)
+                switch (direction.MyDirection)
                 {
 
                     case 2:
@@ -177,7 +85,7 @@ namespace Secondary_Queen
             else if (axisIndex == 2)
             {
                 newXCoordinate = -1 * originalXCoordinate;
-                switch (direction)
+                switch (direction.MyDirection)
                 {
                     case 1:
                         newDirection = 8;
@@ -200,30 +108,29 @@ namespace Secondary_Queen
                 }
             }
 
-            StartingPoint = new R2Point(newXCoordinate, newYCoordinate).Position;
-            MyDirection = newDirection;
+            direction.StartingPoint = new R2Point(newXCoordinate, newYCoordinate).Position;
+            direction.MyDirection = newDirection;
 
-            IDirection reflectedDirection = (IDirection)Clone();
-
-            StartingPoint = new R2Point(originalXCoordinate, originalYCoordinate).Position;
-            MyDirection = originalDirection;
+            direction.StartingPoint = new R2Point(originalXCoordinate, originalYCoordinate).Position;
+            direction.MyDirection = originalDirection;
 
 
-            return reflectedDirection;
+            return (R2Direction<IDirection>)Clone();
+            ;
         }
 
         // Determines whether or not a direction is within the boundaries.
-        public new bool IsDirectionValid(int direction)
+        public bool IsDirectionValid(int direction)
         {
             return direction >= 1 && direction <= 8;
         }
 
         // Move a direction along one of the eight possible directions.
-        public override IDirection Translate(int coordinateSystemDirection, float amount)
+        public R2Direction<IDirection> Translate(int coordinateSystemDirection, float amount)
         {
 
-            float originalXCoordinate = _startingPoint.GetAxisAt(0);
-            float originalYCoordinate = _startingPoint.GetAxisAt(1);
+            float originalXCoordinate = direction.StartingPoint.GetAxisAt(0);
+            float originalYCoordinate = direction.StartingPoint.GetAxisAt(1);
 
             float newXCoordinate = originalXCoordinate;
             float newYCoordinate = originalYCoordinate;
@@ -261,74 +168,65 @@ namespace Secondary_Queen
 
             }
 
-            StartingPoint = new R2Point(newXCoordinate, newYCoordinate).Position;
+            direction.StartingPoint = new R2Point(newXCoordinate, newYCoordinate).Position;
 
-            IDirection translatedDirection = (IDirection)Clone();
 
-            StartingPoint = new R2Point(originalXCoordinate, originalYCoordinate).Position;
-            return translatedDirection;
+            direction.StartingPoint = new R2Point(originalXCoordinate, originalYCoordinate).Position;
+            return (R2Direction<IDirection>)Clone();
         }
 
-        // Print this direction.      
-        public override void Display()
+        // Print this direction.
+        // Belongs to hepler class.
+        public void Display()
         {
-            for (int i = 0; i < elements.Length; i++)
-            {
-                elements[i].Display();
-                if (i != elements.Length - 1)
-                    Console.Write(" , ");
-            }
+            Console.WriteLine("---------------R2 Direction helper----------------");
+            direction.ToString();
 
         }
 
         // Fill this direction with one of the eight possibilities.
         // Directio 1-7.
         // Any direction value correspond to Direction 8.
-        public override void Fill()
+        public void Fill(MyLinkedList<R2Point> points)
         {
-            for (int index = 0; index < elements.Length; index++)
-                elements[index] = null;
+            points.Clear();
 
-            R2Point point = new R2Point(_startingPoint);
-            elements[0] = point;
+            R2Point point = new R2Point(direction.StartingPoint);
+            points.Add(point);
 
 
-            for (int i = 0; i < elements.Length; i++)
-                switch (direction)
+            for (int i = 0; i < direction.SharedDirection.GetNumberOfElements(); i++)
+                switch (direction.MyDirection)
                 {
                     case 1:
-                        elements[i] = new R2Point(point.GetXCoordinate() - i * sharedDirection.Divisor, point.GetYCoordinate());
+                        points.Add(new R2Point(point.GetXCoordinate() - i * direction.SharedDirection.Divisor, point.GetYCoordinate()));
                         break;
                     case 2:
-                        elements[i] = new R2Point(point.GetXCoordinate(), point.GetYCoordinate() + i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate(), point.GetYCoordinate() + i * direction.SharedDirection.Divisor));
                         break;
                     case 3:
-                        elements[i] = new R2Point(point.GetXCoordinate(), point.GetYCoordinate() - i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate(), point.GetYCoordinate() - i * direction.SharedDirection.Divisor));
                         break;
                     case 4:
-                        elements[i] = new R2Point(point.GetXCoordinate() - i * sharedDirection.Divisor,
-                            point.GetYCoordinate() + i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate() - i * direction.SharedDirection.Divisor,
+                            point.GetYCoordinate() + i * direction.SharedDirection.Divisor));
                         break;
                     case 5:
-                        elements[i] = new R2Point(point.GetXCoordinate() + i * sharedDirection.Divisor,
-                            point.GetYCoordinate() - i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate() + i * direction.SharedDirection.Divisor,
+                            point.GetYCoordinate() - i * direction.SharedDirection.Divisor));
                         break;
                     case 6:
-                        elements[i] = new R2Point(point.GetXCoordinate() + i * sharedDirection.Divisor,
-                            point.GetYCoordinate() + i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate() + i * direction.SharedDirection.Divisor,
+                            point.GetYCoordinate() + i * direction.SharedDirection.Divisor));
                         break;
                     case 7:
-                        elements[i] = new R2Point(point.GetXCoordinate() - i * sharedDirection.Divisor,
-                            point.GetYCoordinate() - i * sharedDirection.Divisor);
+                        points.Add(new R2Point(point.GetXCoordinate() - i * direction.SharedDirection.Divisor,
+                            point.GetYCoordinate() - i * direction.SharedDirection.Divisor));
                         break;
                     default:
-                        elements[i] = new R2Point(point.GetXCoordinate() + i * sharedDirection.Divisor, point.GetYCoordinate());
+                        points.Add(new R2Point(point.GetXCoordinate() + i * direction.SharedDirection.Divisor, point.GetYCoordinate()));
                         break;
                 }
-
-            RepeatDirection();
-
-
         }
 
         // Reflect a point about a direction that has both axis coordinate changing.
@@ -336,135 +234,130 @@ namespace Secondary_Queen
         // A negetive element means on the negetive side of the axis.
         // Reflect about y = x and y = -x. However y = x correspond to two axis indeces,
         // likewise for y = -x.
-        public override IDirection ReflectAboutEqualAxis(List<int> axisIndeces, int numberOfTimes)
+        public R2Direction<IDirection> ReflectAboutEqualAxis(List<int> axisIndeces, int numberOfTimes)
         {
-            IDirection<IDirection> r2Direction = (IDirection<IDirection>)Clone();
+            R2Direction<IDirection> r2Direction = (R2Direction < IDirection > )Clone();
 
             for (int i = 0; i < numberOfTimes; i++)
             {
                 if ((axisIndeces[0] == 1 && axisIndeces[1] == 1) || (axisIndeces[0] == -1 && axisIndeces[1] == -1))
                 {
-                    switch (direction)
+                    switch (direction.MyDirection)
                     {
                         case 1:
-                            direction = 3;
+                            direction.MyDirection = 3;
                             break;
                         case 2:
-                            direction = 8;
+                            direction.MyDirection = 8;
                             break;
                         case 3:
-                            direction = 1;
+                            direction.MyDirection = 1;
                             break;
                         case 4:
-                            direction = 5;
+                            direction.MyDirection = 5;
                             break;
                         case 5:
-                            direction = 4;
+                            direction.MyDirection = 4;
                             break;
                         case 6:
-                            direction = 6;
+                            direction.MyDirection = 6;
                             break;
                         case 7:
-                            direction = 7;
+                            direction.MyDirection = 7;
                             break;
                         case 8:
-                            direction = 2;
+                            direction.MyDirection = 2;
                             break;
                     }
                 }
 
                 else if ((axisIndeces[0] == -1 && axisIndeces[1] == 1) || (axisIndeces[0] == 1 && axisIndeces[1] == -1))
                 {
-                    switch (direction)
+                    switch (direction.MyDirection)
                     {
                         case 1:
-                            direction = 2;
+                            direction.MyDirection = 2;
                             break;
                         case 2:
-                            direction = 1;
+                            direction.MyDirection = 1;
                             break;
                         case 3:
-                            direction = 8;
+                            direction.MyDirection = 8;
                             break;
                         case 4:
-                            direction = 4;
+                            direction.MyDirection = 4;
                             break;
                         case 5:
-                            direction = 5;
+                            direction.MyDirection = 5;
                             break;
                         case 6:
-                            direction = 7;
+                            direction.MyDirection = 7;
                             break;
                         case 7:
-                            direction = 6;
+                            direction.MyDirection = 6;
                             break;
                         case 8:
-                            direction = 3;
+                            direction.MyDirection = 3;
                             break;
                     }
                 }
 
-                r2Direction = (new R2Direction<IDirection>(new R2Point(StartingPoint), direction,
-                SharedDirection.XLength, SharedDirection.YLength, SharedDirection.Divisor, canShootList,
-                CreateDuration(duration), numberOfTimes, circular));
+                SharedDirection shared = (SharedDirection)direction.SharedDirection;
+                r2Direction = new R2Direction<IDirection>(new R2Point(direction.StartingPoint), 
+                direction.MyDirection,shared.XLength, shared.YLength, shared.Divisor, 
+                direction.SpeedList, direction.Speed);
             }
-            return (IDirection)r2Direction;
+            return r2Direction;
 
         }
 
-        // Comparing two objects of this class.
-        public override int CompareTo(IDirection other)
-        {
-            return CompareTo(other);
-        }
-
-        // Hepler method for comparing two objects of this class.
-        private int CompareTo(R2Direction<IDirection> other)
+        public int CompareTo(R2Direction<IDirection> other)
         {
             int result = 0;
+            SharedDirection shared = (SharedDirection)direction.SharedDirection;
 
-            if (sharedDirection.XLength < other.SharedDirection.XLength)
+            if (shared.XLength < ((SharedDirection)other.Direction.SharedDirection).XLength)
             {
                 result = -1;
             }
 
-            else if (sharedDirection.XLength > other.SharedDirection.XLength)
+            else if (shared.XLength > ((SharedDirection)other.Direction.SharedDirection).XLength)
             {
                 result = 1;
             }
 
             else
             {
-                if (SharedDirection.YLength < other.SharedDirection.YLength)
+                if (shared.YLength < ((SharedDirection)other.Direction.SharedDirection).YLength)
                 {
                     result = -1;
                 }
 
-                else if (SharedDirection.YLength > other.SharedDirection.YLength)
+                else if (shared.YLength > ((SharedDirection)other.Direction.SharedDirection).YLength)
                 {
                     result = 1;
                 }
 
                 else
                 {
-                    if (sharedDirection.Divisor > other.SharedDirection.Divisor)
+                    if (shared.Divisor > ((SharedDirection)other.Direction.SharedDirection).Divisor)
                     {
                         result = -1;
                     }
 
-                    else if (sharedDirection.Divisor < other.SharedDirection.Divisor)
+                    else if (shared.Divisor < ((SharedDirection)other.Direction.SharedDirection).Divisor)
                     {
                         result = 1;
                     }
 
                     else
                     {
-                        if (MyDirection < other.MyDirection)
+                        if (direction.MyDirection < other.Direction.MyDirection)
                         {
                             result = -1;
                         }
 
-                        else if (MyDirection > other.MyDirection)
+                        else if (direction.MyDirection > other.Direction.MyDirection)
                         {
                             result = 1;
                         }
@@ -478,22 +371,23 @@ namespace Secondary_Queen
 
             return result;
         }
-
+        
         // Makes a copy of the current object.
-        public override object Clone()
+        public object Clone()
         {
-            return new R2Direction<IDirection>(new R2Point(_startingPoint), direction,
-                SharedDirection.XLength, SharedDirection.YLength, sharedDirection.Divisor,
-                canShootList, CreateDuration(duration), numberOfTimes, circular);
+            SharedDirection shared = (SharedDirection)direction.SharedDirection;
+            return new R2Direction<IDirection>(new R2Point(direction.StartingPoint), 
+                direction.MyDirection,shared.XLength, shared.YLength, direction.
+                SharedDirection.Divisor, direction.SpeedList, direction.Speed);
         }
 
         // Find the direction opposite to this direction.
         // The opposite direction starts on the last point of this direction.      
-        public override Direction<IDirection, R2Point> GetOppositeDirection()
+        public R2Direction<IDirection> GetOppositeDirection(R2Point lastPoint)
         {
             int newDirection;
 
-            switch (direction)
+            switch (direction.MyDirection)
             {
                 case 1:
                     newDirection = 8;
@@ -523,46 +417,46 @@ namespace Secondary_Queen
 
             }
 
-
-            return new R2Direction<IDirection>(GetLast(), newDirection,
-            SharedDirection.XLength, SharedDirection.YLength, sharedDirection.Divisor,
-            canShootList, CreateDuration(duration), numberOfTimes, circular);
+            SharedDirection shared = (SharedDirection)direction.SharedDirection;
+            return new R2Direction<IDirection>(lastPoint, newDirection,
+            shared.XLength, shared.YLength, direction.SharedDirection.Divisor,
+            direction.SpeedList, direction.Speed);
         }
 
         // The starting point for the direction following this one when making a letter.
-        public override Point RetrieveNextStartingPoint(int direction)
+        public Point RetrieveNextStartingPoint(int direction, R2Point lastPoint)
         {
-            Point newStartingPoint = GetLast().Position;
+            Point newStartingPoint = lastPoint.Position;
 
             switch (direction)
             {
                 case 1:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) - elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) - this.direction.SharedDirection.Divisor);
                     break;
                 case 2:
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) + elements.Length);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) + this.direction.SharedDirection.Divisor);
                     break;
                 case 3:
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) - elements.Length);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) - this.direction.SharedDirection.Divisor);
                     break;
                 case 4:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) - elements.Length);
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) + elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) - this.direction.SharedDirection.Divisor);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) + this.direction.SharedDirection.Divisor);
                     break;
                 case 5:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) + elements.Length);
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) - elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) + this.direction.SharedDirection.Divisor);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) - this.direction.SharedDirection.Divisor);
                     break;
                 case 6:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) + elements.Length);
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) + elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) + this.direction.SharedDirection.Divisor);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) + this.direction.SharedDirection.Divisor);
                     break;
                 case 7:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) - elements.Length);
-                    newStartingPoint.SetAxisAt(1, GetLast().Position.GetAxisAt(1) - elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) - this.direction.SharedDirection.Divisor);
+                    newStartingPoint.SetAxisAt(1, lastPoint.Position.GetAxisAt(1) - this.direction.SharedDirection.Divisor);
                     break;
                 case 8:
-                    newStartingPoint.SetAxisAt(0, GetLast().Position.GetAxisAt(0) + elements.Length);
+                    newStartingPoint.SetAxisAt(0, lastPoint.Position.GetAxisAt(0) + this.direction.SharedDirection.Divisor);
                     break;
             }
 
@@ -570,16 +464,16 @@ namespace Secondary_Queen
         }
 
         // Axis start from 1,2...with 1 corresponding to x-axis, 2 corresponding to y-axis and 3 corresponding to z-axis.
-        public override bool IsParallellTo(int axis)
+        public bool IsParallellTo(int axis)
         {
             bool returnValue = false;
 
-            if (axis == 1 && (direction == 1 || direction == 8))
+            if (axis == 1 && (direction.MyDirection == 1 || direction.MyDirection == 8))
             {
                 returnValue = true;
             }
 
-            else if (axis == 2 && (direction == 2 || direction == 3))
+            else if (axis == 2 && (direction.MyDirection == 2 || direction.MyDirection == 3))
             {
                 returnValue = true;
             }
@@ -588,16 +482,16 @@ namespace Secondary_Queen
         }
 
         // Axis start from 1,2...with 1 corresponding to x-axis, 2 corresponding to y-axis and 3 corresponding to z-axis.
-        public override bool IsPerpendicularTo(int axis)
+        public bool IsPerpendicularTo(int axis)
         {
             bool returnValue = false;
 
-            if (axis == 1 && (direction == 2 || direction == 3))
+            if (axis == 1 && (direction.MyDirection == 2 || direction.MyDirection == 3))
             {
                 returnValue = true;
             }
 
-            else if (axis == 2 && (direction == 1 || direction == 8))
+            else if (axis == 2 && (direction.MyDirection == 1 || direction.MyDirection == 8))
             {
                 returnValue = true;
             }
@@ -607,16 +501,24 @@ namespace Secondary_Queen
 
         // Rotate about the  x-axis or y-axis a certatin number of times, and return the result.
         // Rotate around the x-axis or the y-axis.
-        public override IDirection RotateAroundAxis(int indexOfAxis, int numberOfTimes)
+        public R2Direction<IDirection> RotateAroundAxis(int indexOfAxis, int numberOfTimes)
         {
-            return (IDirection)Clone();
+            return (R2Direction<IDirection>) Clone();
         }
 
         // Rotate about the  line y = x or y = -x a certain number of times, and return the result.
         // Rotate about y = x and y = -x.
-        public override IDirection RotateAroundEqualAxis(int[] axisIndeces, int numberOfTimes)
+        public R2Direction<IDirection> RotateAroundEqualAxis(int[] axisIndeces, int numberOfTimes)
         {
-            return (IDirection)Clone();
+            return (R2Direction<IDirection>)Clone();
         }
+
+        // Reflect about y = x or y = -x.
+        public R2Direction<IDirection> ReflectAboutEqualAxis(int[] axisIndeces, int numberOfTimes)
+        {
+            return ReflectAboutEqualAxis(new List<int>(axisIndeces),numberOfTimes);
+        }
+
+        
     }
 }

@@ -29,17 +29,17 @@ namespace Primary_Queen
             move = new RightOnly<R1CDirection>();
             traceType = Primary_Trace_Type.POINT_TRACE;
             InitializeAttributes();
-            FillCanShootList();
+            FillCanSwitchList();
             FillDuration(1000);
 
         }
 
-        public R1CMovingStrategy(Move<R1CDirection> move, List<bool> canShootList,
+        public R1CMovingStrategy(Move<R1CDirection> move, List<bool> CanSwitchList,
         Dictionary<int, int> duration, Primary_Trace_Type traceType)
         {
             this.move = move;
             this.duration = duration;
-            this.canShootList = canShootList;
+            this.CanSwitchList = CanSwitchList;
             this.traceType = traceType;
 
             InitializeAttributes();
@@ -49,11 +49,11 @@ namespace Primary_Queen
         {
             this.move = move;
             this.traceType = traceType;
-            canShootList = new List<bool>();
+            CanSwitchList = new List<bool>();
             duration = new Dictionary<int, int>();
 
             InitializeAttributes();
-            FillCanShootList();
+            FillCanSwitchList();
             FillDuration(1000);
         }
 
@@ -239,7 +239,7 @@ namespace Primary_Queen
 
         public object Clone()
         {
-            return new R1CMovingStrategy(move, canShootList,
+            return new R1CMovingStrategy(move, CanSwitchList,
             duration, traceType);
         }
     }
